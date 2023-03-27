@@ -184,7 +184,6 @@
 		gpio_id = <0>;
 		reg = <0>;
 		num = <2>;
-	//	id = [0 0 0];
 		id-reg = <0xFC>;
 		backlight = <&backlight>;
 		enable-gpios = <&gpio3 RK_PA1 GPIO_ACTIVE_HIGH>;
