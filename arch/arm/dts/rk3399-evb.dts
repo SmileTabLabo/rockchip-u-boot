@@ -669,6 +669,7 @@ rk818: pmic@1c {
 };
 
 
+
 &i2c1 {
 	status = "okay";
 	i2c-scl-rising-time-ns = <140>;
@@ -809,6 +810,13 @@ rk818: pmic@1c {
 
 &i2c5 {
 	status = "okay";
+/*	i2c-scl-rising-time-ns = <345>;
+	i2c-scl-falling-time-ns = <11>;
+	clock-frequency = <200000>;
+
+	i2c-scl-rising-time-ns = <150>;
+	i2c-scl-falling-time-ns = <30>;
+	clock-frequency = <100000>;*/
 
 	clock-frequency = <400000>;
 	emr@A {
@@ -822,6 +830,180 @@ rk818: pmic@1c {
 		pinctrl-names = "default";
 		pinctrl-0 = <&wacom_irq>;
 	};
+};
+
+&i2s0 {
+	status = "okay";
+	rockchip,i2s-broken-burst-len;
+	rockchip,playback-channels = <8>;
+	rockchip,capture-channels = <8>;
+	#sound-dai-cells = <0>;
+};
+
+&i2s2 {
+	#sound-dai-cells = <0>;
+	status = "okay";
+};
+
+
+&io_domains {
+	status = "okay";
+	bt656-supply = <&vcc1v8_dvp>;
+	audio-supply = <&vcca1v8_codec>;
+	sdmmc-supply = <&vccio_sd>;
+	gpio1830-supply = <&vcc_3v0>;
+};
+
+&pmu_io_domains {
+	status = "okay";
+	pmu1830-supply = <&vcc_1v8>;
+};
+
+
+&isp0_mmu {
+	status = "okay";
+};
+
+&isp1_mmu {
+	status = "okay";
+};
+
+&pinctrl {
+    pinctrl-names = "default";
+ /*   pinctrl-0 = <&host_hub_vcc>;
+
+    host-hub-vcc {
+        host_hub_vcc: host-hub-vcc {
+        rockchip,pins = <1 RK_PC7 RK_FUNC_GPIO &pcfg_output_high>,
+                        <2 RK_PA4 RK_FUNC_GPIO &pcfg_output_high>,
+                        <1 RK_PA2 RK_FUNC_GPIO &pcfg_output_high>,
+                        <4 RK_PD5 RK_FUNC_GPIO &pcfg_output_high>;
+        };
+    };*/
+
+	Wacom_TP {
+		wacom_irq: wacom_irq {
+			rockchip,pins = <3 RK_PB5 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+
+	};
+	hallsensor {
+		mh248_irq_gpio: mh248-irq-gpio {
+			rockchip,pins = <1 RK_PA0 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+	};
+
+	sdmmc_pwr: sdmmc-pwr {
+		rockchip,pins = <0 RK_PA1 RK_FUNC_GPIO &pcfg_pull_none>;
+	};
+/*
+	    leds {                                                                                                            
+		 led_power: led-power {                                                                    
+		     rockchip,pins = <4 RK_PC6 RK_FUNC_GPIO &pcfg_pull_none>;
+		 };
+
+		 led_user: led-user {
+		     rockchip,pins = <0 RK_PB5 RK_FUNC_GPIO &pcfg_pull_none>;
+		 };
+	    };
+*/
+	headphone {
+		hp_det: hp-det {
+			rockchip,pins = <4 RK_PD4 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+	};
+
+	   bl {                                                                                                            
+		 bl_en: bl-en {                                                                    
+		     rockchip,pins = <1 RK_PC7 RK_FUNC_GPIO &pcfg_pull_none>;
+		 };
+	 };
+	pcie {
+		pcie_drv: pcie-drv {
+			rockchip,pins =	<1 17 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+		pcie_3g_drv: pcie-3g-drv {
+			rockchip,pins = <0 2 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+	};
+
+
+	fusb30x {
+		fusb0_int: fusb0-int {
+			rockchip,pins =
+				<1 RK_PA2 RK_FUNC_GPIO &pcfg_pull_up>;
+			};
+	};
+
+
+
+	lcd_gpio {
+		lcd_rst_gpio: lcd-rst-gpio {
+			rockchip,pins = <3 RK_PA0 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+		lcd_pwr_gpio: lcd-pwr-gpio {
+			rockchip,pins = <3 RK_PA1 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+	};
+
+	pmic {
+		pmic_int_l: pmic-int-l {
+			rockchip,pins =
+				<1 RK_PC5 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+
+		pmic_dvs2: pmic-dvs2 {
+			rockchip,pins =
+				<1 RK_PC2 RK_FUNC_GPIO &pcfg_pull_down>;
+		};
+
+		pmic_stby: pmic-stby {
+			rockchip,pins =
+				<1 RK_PD0 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+
+		pmic_hold: pmic-hold{
+			rockchip,pins =
+				<1 RK_PB5 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+
+		vsel1_gpio: vsel1-gpio {
+			rockchip,pins =
+				<1 RK_PC1 RK_FUNC_GPIO &pcfg_pull_down>;
+		};
+		vsel2_gpio: vsel2-gpio {
+			rockchip,pins =
+				<1 RK_PB6 RK_FUNC_GPIO &pcfg_pull_down>;
+		};
+	};
+
+	sdio-pwrseq {
+		wifi_enable_h: wifi-enable-h {
+			rockchip,pins = <0 RK_PB2 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+	};
+
+	tp_irq {
+		tp_irq_gpio: tp-irq-gpio {
+			rockchip,pins = <3 RK_PB0 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+	};
+
+	wireless-bluetooth {
+		uart0_gpios: uart0-gpios {
+			rockchip,pins = <2 RK_PC3 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+	};
+	wireless-wifi {
+		host_wake_gpio: host_wake-gpio {
+			rockchip,pins = <2 RK_PD3  RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+		
+		host_wake_gpio2: host_wake-gpio2 {
+			rockchip,pins = <4 RK_PD0 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+	};
+
 };
 
 
