@@ -6,6 +6,7 @@
  * SPDX-License-Identifier:     GPL-2.0+
  */
 
+/dts-v1/;
 #include <dt-bindings/pwm/pwm.h>
 #include <dt-bindings/pinctrl/rockchip.h>
 #include "rk3399.dtsi"
@@ -49,6 +50,17 @@
 		};
 	};
 
+	vdd_center: vdd-center {
+		compatible = "pwm-regulator";
+		pwms = <&pwm3 0 25000 1>;
+		regulator-name = "vdd_center";
+		regulator-min-microvolt = <800000>;
+		regulator-max-microvolt = <1400000>;
+		regulator-init-microvolt = <950000>;
+		regulator-always-on;
+		regulator-boot-on;
+		status = "okay";
+	};
 
 	vccsys: vccsys {
 		compatible = "regulator-fixed";
