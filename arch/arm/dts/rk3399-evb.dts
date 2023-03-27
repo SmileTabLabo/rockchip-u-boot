@@ -307,12 +307,12 @@
 
 	rk818: pmic@1b {
 		compatible = "rockchip,rk818";
-		clock-output-names = "xin32k", "wifibt_32kin";
+		clock-output-names = "rk818-clkout1", "wifibt_32kin";
 		interrupt-parent = <&gpio0>;
-		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+		interrupts = <21 IRQ_TYPE_LEVEL_LOW>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&pmic_int_l>;
-		reg = <0x1b>;
+		reg = <0x1c>;
 		rockchip,system-power-controller;
 		#clock-cells = <1>;
 		status = "okay";
