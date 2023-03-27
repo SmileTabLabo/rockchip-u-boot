@@ -156,8 +156,6 @@
 		pwms = <&pwm0 0 25000 0>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&bl_en>;
-		pwm-delay-us = <10000>;
-		status = "disabled";
 	};
 
 	vcc5v0_sys: vcc5v0-sys {
@@ -182,18 +180,18 @@
 	};
 
 	panel: panel {
-		compatible = "simple-panel";
+		compatible = "simple-panel-dsi";
 		backlight = <&backlight>;
 		power-supply = <&vcc_lcd>;
-		enable-gpios = <&gpio1 13 GPIO_ACTIVE_HIGH>;
-		prepare-delay-ms = <20>;
-		enable-delay-ms = <20>;
+		enable-gpios = <&gpio1 RK_PA1 GPIO_ACTIVE_HIGH>;
+		prepare-delay-ms = <50>;
+		enable-delay-ms = <50>;
 
 		display-timings {
 			native-mode = <&timing0>;
 
 			timing0: timing0 {
-				clock-frequency = <150000000>;
+				clock-frequency = <155000000>;
 				hactive = <1200>;
 				vactive = <1920>;
 				hfront-porch = <60>;
