@@ -6,7 +6,6 @@
  * SPDX-License-Identifier:     GPL-2.0+
  */
 
-/dts-v1/;
 #include <dt-bindings/pwm/pwm.h>
 #include <dt-bindings/pinctrl/rockchip.h>
 #include "rk3399.dtsi"
@@ -290,9 +289,52 @@
 
 &i2c0 {
 	status = "okay";
+	i2c-scl-rising-time-ns = <180>;
+	i2c-scl-falling-time-ns = <30>;
 	clock-frequency = <400000>;
-	i2c-scl-falling-time-ns = <180>;
-	i2c-scl-rising-time-ns = <30>;
+
+	vdd_cpu_b: syr837@40 {
+		compatible = "silergy,syr827";
+		reg = <0x40>;
+		vin-supply = <&vcc_sys>;
+		regulator-compatible = "fan53555-reg";
+		pinctrl-0 = <&vsel1_gpio>;
+		vsel-gpios = <&gpio1 RK_PC1 GPIO_ACTIVE_HIGH>;
+		regulator-name = "vdd_cpu_b";
+		regulator-min-microvolt = <712500>;
+		regulator-max-microvolt = <1500000>;
+		regulator-ramp-delay = <1000>;
+		fcs,suspend-voltage-selector = <1>;
+		regulator-always-on;
+		regulator-boot-on;
+		regulator-initial-state = <3>;
+		regulator-state-mem {
+			regulator-off-in-suspend;
+		};
+	};
+
+	vdd_gpu: syr828@41 {
+		compatible = "silergy,syr828";
+		status = "okay";
+		reg = <0x41>;
+		vin-supply = <&vcc_sys>;
+		regulator-compatible = "fan53555-reg";
+		pinctrl-0 = <&vsel2_gpio>;
+		vsel-gpios = <&gpio1 RK_PB6 GPIO_ACTIVE_HIGH>;
+		regulator-name = "vdd_gpu";
+		regulator-min-microvolt = <712500>;
+		regulator-max-microvolt = <1500000>;
+		regulator-ramp-delay = <1000>;
+		fcs,suspend-voltage-selector = <1>;
+		regulator-always-on;
+		regulator-boot-on;
+		regulator-initial-state = <3>;
+			regulator-state-mem {
+			regulator-off-in-suspend;
+		};
+	};
+
+	
 rk818: pmic@1c {
 		compatible = "rockchip,rk818";
 		status = "okay";
@@ -623,6 +665,170 @@ rk818: pmic@1c {
 			ID2_det_gpio = <&gpio3 RK_PA7 GPIO_ACTIVE_LOW>;
 			RK818_reset_gpios = <&gpio1 RK_PA6 GPIO_ACTIVE_HIGH>;
 		};
+	};
+};
+
+
+
+&i2c1 {
+	status = "okay";
+	i2c-scl-rising-time-ns = <140>;
+	i2c-scl-falling-time-ns = <30>;
+
+
+
+	rt5640: rt5640@1c  {
+		status = "okay";
+		#sound-dai-cells = <0>;
+		compatible = "realtek,rt5640";
+		reg = <0x1c>;
+		clocks = <&cru SCLK_I2S_8CH_OUT>;
+		clock-names = "mclk";
+		realtek,in1-differential;
+		pinctrl-names = "default";
+		pinctrl-0 = <&i2s_8ch_mclk>;
+	};
+
+};
+
+&i2c4 {
+	status = "okay";
+	i2c-scl-rising-time-ns = <345>;
+	i2c-scl-falling-time-ns = <11>;
+	clock-frequency = <200000>;
+
+	bq25700: bq25700@6b {
+		compatible = "ti,bq25703";
+		reg = <0x6b>;
+		extcon = <&fusb0>;
+		interrupt-parent = <&gpio1>;
+		interrupts = <RK_PC7 IRQ_TYPE_LEVEL_LOW>;
+		pinctrl-names = "default";
+	//	pinctrl-0 = <&charger_ok>;
+		ti,charge-current = <1500000>;
+		ti,max-charge-voltage = <8704000>;
+		ti,max-input-voltage = <20000000>;
+		ti,max-input-current = <6000000>;
+		ti,input-current-sdp = <500000>;
+		ti,input-current-dcp = <2000000>;
+		ti,input-current-cdp = <2000000>;
+		ti,input-current-dc = <2000000>;
+		ti,minimum-sys-voltage = <6700000>;
+		ti,otg-voltage = <5000000>;
+		ti,otg-current = <500000>;
+		ti,input-current = <500000>;
+		pd-charge-only = <0>;
+		//typec0-enable-gpios = <&gpio1 RK_PA3 GPIO_ACTIVE_LOW>;
+		status = "disabled";
+	};
+
+	cw2015: cw2015@62 {
+		status = "disabled";
+		compatible = "cw201x";
+		reg = <0x62>;
+		bat_config_info = <0x15 0xA8 0x5D 0x5D 0x59 0x55 0x57 0x50
+				   0x4B 0x4F 0x55 0x53 0x43 0x37 0x2F 0x28
+				   0x21 0x18 0x15 0x17 0x27 0x43 0x57 0x4F
+				   0x13 0x5E 0x0A 0xE1 0x19 0x31 0x3C 0x46
+				   0x4C 0x52 0x50 0x54 0x44 0x1E 0x7E 0x4C
+				   0x1C 0x4A 0x52 0x87 0x8F 0x91 0x94 0x52
+				   0x82 0x8C 0x92 0x96 0x00 0xAD 0xFB 0xCB
+				   0x2F 0x7D 0x72 0xA5 0xB5 0xC1 0x1C 0x09>;
+		monitor_sec = <2>;
+		virtual_power = <0>;
+		divider_res1 = <200>;
+		divider_res2 = <200>;
+	};
+
+	fusb0: fusb30x@22 {
+		compatible = "fairchild,fusb302";
+		reg = <0x22>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&fusb0_int>;
+		int-n-gpios = <&gpio1 RK_PA2 GPIO_ACTIVE_HIGH>;
+	//	vbus-5v-gpios = <&gpio0 RK_PA6 GPIO_ACTIVE_HIGH>;
+		status = "okay";
+	};
+	bma2x2: bma255@18 {
+		compatible = "bma2xx_acc";
+		status = "okay";
+		reg = <0x18>;
+		type = <SENSOR_TYPE_ACCEL>;
+		irq_enable = <0>;
+		poll_delay_ms = <20>;
+		layout = <8>;
+		reprobe_en = <1>;/* this sensor need to be probe again */
+	};
+	mxc6655: mxc6655@15 {
+		compatible = "gs_mxc6655";
+		status = "okay";
+		reg = <0x15>;
+		type = <SENSOR_TYPE_ACCEL>;
+		irq_enable = <0>;
+		poll_delay_ms = <20>;
+		layout = <8>;
+		reprobe_en = <1>;/* this sensor need to be probe again */
+	};
+	sensor@26{
+		compatible = "gs_msa"; 
+		reg = <0x26>; 
+		type = <SENSOR_TYPE_ACCEL>; 
+		//irq-gpio = <&gpio2 GPIO_B2 IRQ_TYPE_EDGE_FALLING>; 
+		irq_enable = <0>; 
+		poll_delay_ms = <20>; 
+		//layout = <6>; 
+		layout = <8>; 
+	};
+
+	sensor@19 {
+		status = "okay";
+		compatible = "gs_lis3dh";
+		reg = <0x19>;
+		type = <SENSOR_TYPE_ACCEL>;
+		irq_enable = <0>;
+		poll_delay_ms = <20>;
+		reprobe_en = <0>;
+		layout = <6>;    
+	};
+
+	gt9xx: gt9xx@5D {
+		compatible = "goodix,GT9XX-TS";
+		reg = <0x5D>;
+	//	irq_gpio_number = <&gpio4 RK_PD4 IRQ_TYPE_LEVEL_LOW>;
+		rst_gpio_number = <&gpio4 RK_PC5 GPIO_ACTIVE_HIGH>;
+		screen_max_x = <4096>;
+		screen_max_y = <4096>;
+		tp-size = <89>;
+		//1280x800
+		x_reverse = <1>;
+		y_reverse = <0>;
+		xy_reverse = <0>;
+		configfile-num = <1>;
+		status = "disabled";
+	};
+};
+
+&i2c5 {
+	status = "okay";
+/*	i2c-scl-rising-time-ns = <345>;
+	i2c-scl-falling-time-ns = <11>;
+	clock-frequency = <200000>;
+
+	i2c-scl-rising-time-ns = <150>;
+	i2c-scl-falling-time-ns = <30>;
+	clock-frequency = <100000>;*/
+
+	clock-frequency = <400000>;
+	emr@A {
+		compatible = "WAC_I2C_TOUCH";
+		reg = <0xA>;
+		screen_max_x = <4096>;
+		screen_max_y = <4096>;
+		reset-gpio = <&gpio3 RK_PB4 GPIO_ACTIVE_HIGH>;
+		em-gpio = <&gpio3 RK_PB5 IRQ_TYPE_LEVEL_LOW>;
+		stop-gpio = <&gpio3 RK_PB1 GPIO_ACTIVE_HIGH>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&wacom_irq>;
 	};
 };
 
