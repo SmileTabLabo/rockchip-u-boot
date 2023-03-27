@@ -54,8 +54,10 @@
 	vccsys: vccsys {
 		compatible = "regulator-fixed";
 		regulator-name = "vccsys";
-		regulator-boot-on;
 		regulator-always-on;
+		regulator-boot-on;
+		regulator-min-microvolt = <3900000>;
+		regulator-max-microvolt = <3900000>;
 	};
 
 	vcc3v3_sys: vcc3v3-sys {
@@ -306,13 +308,13 @@
 		wakeup-source;
 		extcon = <&fusb0>;
 
-		vcc1-supply = <&vcc_sys>;
-		vcc2-supply = <&vcc_sys>;
-		vcc3-supply = <&vcc_sys>;
-		vcc4-supply = <&vcc_sys>;
-		vcc6-supply = <&vcc_sys>;
+		vcc1-supply = <&vccsys>;
+		vcc2-supply = <&vccsys>;
+		vcc3-supply = <&vccsys>;
+		vcc4-supply = <&vccsys>;
+		vcc6-supply = <&vccsys>;
 		vcc7-supply = <&vcc3v3_sys>;
-		vcc8-supply = <&vcc_sys>;
+		vcc8-supply = <&vccsys>;
 		vcc9-supply = <&vcc3v3_sys>;
 		
 		
