@@ -414,11 +414,6 @@
 };
 
 
-&route_dsi {
-	status = "okay";
-	logo,mode = "center";
-};
-
 &edp_in_vopl {
 	status = "disabled";
 };
