@@ -182,11 +182,16 @@
 	panel: panel {
 		compatible = "simple-panel-dsi";
 		backlight = <&backlight>;
-		power-supply = <&vcc_lcd>;
-		enable-gpios = <&gpio1 RK_PA1 GPIO_ACTIVE_HIGH>;
+		enable-gpios = <&gpio3 RK_PA1 GPIO_ACTIVE_HIGH>;
+		reset-gpios = <&gpio3 RK_PA0 GPIO_ACTIVE_LOW>;
 		prepare-delay-ms = <50>;
 		enable-delay-ms = <50>;
-
+		id = [82 79 0d];
+		id-reg = <0xFC>;
+		gpio_id = <0>;
+		pinctrl-0 = <&lcd_pwr_gpio>;
+		pinctrl-1 = <&lcd_rst_gpio>;
+		
 		display-timings {
 			native-mode = <&timing0>;
 
@@ -356,6 +361,15 @@
 			rockchip,pins = <1 RK_PC7 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 	};
+	lcd_gpio {
+		lcd_rst_gpio: lcd-rst-gpio {
+			rockchip,pins = <3 RK_PA0 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+		lcd_pwr_gpio: lcd-pwr-gpio {
+			rockchip,pins = <3 RK_PA1 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+	};
+
 	pmic {
 		pmic_int_l: pmic-int-l {
 			rockchip,pins =
